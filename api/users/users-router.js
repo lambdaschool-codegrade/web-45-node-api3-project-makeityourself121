@@ -9,7 +9,6 @@ const User = require('./users-model')
 const router = express.Router()
 
 router.get('/', (req, res) => {
-  // RETURN AN ARRAY WITH ALL THE USERS
   User.get(req.query)
     .then((user) => {
       res.status(200).json(user)

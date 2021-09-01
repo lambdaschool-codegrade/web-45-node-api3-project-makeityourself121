@@ -4,8 +4,6 @@ const {
   validateUser,
   validatePost,
 } = require('../middleware/middleware')
-// You will need `users-model.js` and `posts-model.js` both
-// The middleware functions also need to be required
 const User = require('./users-model')
 
 const router = express.Router()
@@ -22,14 +20,10 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', validateUserId, (req, res) => {
-  // RETURN THE USER OBJECT
-  // this needs a middleware to verify user id
   res.json(req.user)
 })
 
 router.post('/', validateUser, (req, res) => {
-  // RETURN THE NEWLY CREATED USER OBJECT
-  // this needs a middleware to check that the request body is valid
   User.insert(req.body)
     .then((user) => {
       res.status(201).json(user)
@@ -40,9 +34,6 @@ router.post('/', validateUser, (req, res) => {
 })
 
 router.put('/:id', validateUserId, validateUser, (req, res) => {
-  // RETURN THE FRESHLY UPDATED USER OBJECT
-  // this needs a middleware to verify user id
-  // and another middleware to check that the request body is valid
   User.update(req.params.id, req.body)
     .then((user) => {
       res.status(200).json(user)
@@ -53,8 +44,6 @@ router.put('/:id', validateUserId, validateUser, (req, res) => {
 })
 
 router.delete('/:id', validateUserId, async (req, res) => {
-  // RETURN THE FRESHLY DELETED USER OBJECT
-  // this needs a middleware to verify user id
   const deletedUser = await User.getById(req.params.id)
   User.remove(req.params.id).then((user) => {
     console.log(user)
@@ -65,6 +54,10 @@ router.delete('/:id', validateUserId, async (req, res) => {
 router.get('/:id/posts', validateUserId, (req, res) => {
   // RETURN THE ARRAY OF USER POSTS
   // this needs a middleware to verify user id
+  User.getUserPosts(req.body).then((post) => {
+    console.log(post)
+    res.status(200).json(post)
+  })
 })
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
@@ -73,5 +66,4 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // and another middleware to check that the request body is valid
 })
 
-// do not forget to export the router
 module.exports = router
